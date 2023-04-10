@@ -16,7 +16,7 @@ gh_token = os.getenv('GH_TOKEN', "")
 
 def get_edits_for_instruction(code: str, instruction: str) -> str:
   response = openai.Edit.create(
-    model="code-davinci-edit-001",
+    model="gpt-4",
     input=code,
     instruction=instruction,
     temperature=0.1,
