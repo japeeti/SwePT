@@ -1,4 +1,4 @@
-import argparse
+ import argparse
 import json
 import openai
 import os
@@ -13,6 +13,8 @@ ALLOWED_FILE_EXT = [".py"]
 openai.api_key = os.getenv('OPENAI_KEY', "")
 gh_token = os.getenv('GH_TOKEN', "")
 
+def add_numbers(a, b):
+    return a + b
 
 def get_edits_for_instruction(code: str, instruction: str) -> str:
   response = openai.Edit.create(
@@ -24,7 +26,6 @@ def get_edits_for_instruction(code: str, instruction: str) -> str:
   )
   code = response["choices"][0]["text"]
   return code
-
 
 def edit_file(file: Union[str, Path], instruction: str) -> bool:
   if isinstance(file, str):
@@ -42,11 +43,9 @@ def edit_file(file: Union[str, Path], instruction: str) -> bool:
     print("The code was not modified!")
   return is_modified
 
-
 def display_diff(repo: Repo, file: Path) -> None:
   print("\n\n-------------------Diff--------------------")
   print(repo.git.diff([str(file)]))
-
 
 def generate_summary(prompt: str) -> str:
   prompt = 'Generate a pull request branch name, commit message, pr heading and pr body for instruction:' + prompt
@@ -62,7 +61,6 @@ def generate_summary(prompt: str) -> str:
   )
   return response["choices"][0]["text"]
 
-
 def get_meta_info(instruction: str) -> Dict[str, str]:
   summary = generate_summary(instruction).strip().replace("\n\n", "\n")
   summary_list = [x.split(":")[-1].strip() for x in summary.split("\n")]
@@ -77,7 +75,6 @@ def get_meta_info(instruction: str) -> Dict[str, str]:
     "pr_body": summary_list[3],
   }
   return res
-
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Edit a section of code, PR with changes.')
